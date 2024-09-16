@@ -1,0 +1,47 @@
+# Date Created	14 September 2024
+# Author				Mike Z
+# Email				  mzinyoni7@outlook.com
+# Website				https://mikeio.web.app
+# Status				Looking for a job!
+# Description		Users and rooms simulation
+
+# docker compose -f "docker-compose.yml" up -d --build
+# docker compose -f "docker-compose.yml" down
+# docker exec -it containerid /bin/bash
+# docker exec -it postgres /bin/bash
+
+# PLEASE SEE WHAT THE .env FILE IS SUPPOSED TO LOOK LIKE FROM .env.example
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./dockervolume/postgres:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  app:
+    build:
+      context: src
+      dockerfile: Dockerfile
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+volumes:
+  postgres_volume:
+  mongodata_volume:
